@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: DeploymentConfig
+metadata:
+  name: artifactory-oss
+  labels:
+    app: artifactory-oss
+    component: artifactory-oss-server
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 120
+      maxUnavailable: 25%
+      maxSurge: 25%
+    resources:
+  triggers:
+    - type: ConfigChange
+  replicas: 1
+  selector:
+    app: artifactory-oss
+    component: artifactory-oss-server
+  template:
+    metadata:
+      labels:
+        app: artifactory-oss
+        component: artifactory-oss-server
+    spec:
+      containers:
+        - name: artifactory-oss
+          image: widerin/openshift-artifactory-oss
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1G
+            requests:
+              cpu: 100m
+              memory: 512M
+          volumeMounts:
+            - name: artifactory-oss-data
+              mountPath: /artifactory
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /webapp/
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext:
+      # Change this if you want to bind a persistent volume claim
+      volumes:
+        - name: artifactory-oss-data
+          emptyDir:
