@@ -3,6 +3,7 @@
 5.3.2 (2017-06-11)
 ------------------
 
+- Pin version in openshift deployment config.
 - Upgrade to artifactory-oss 5.3.2
 
 
