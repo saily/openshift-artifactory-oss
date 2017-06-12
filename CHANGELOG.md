@@ -1,5 +1,11 @@
 # CHANGELOG
 
+(unreleased)
+------------
+
+- Change to *Recreate* strategy in deployment config.
+
+
 5.3.2 (2017-06-11)
 ------------------
 
