@@ -3,6 +3,7 @@
 (unreleased)
 ------------
 
+- Upgrade to artifactory-oss 5.6.2
 - Change to *Recreate* strategy in deployment config.
 
 
